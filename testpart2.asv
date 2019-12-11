@@ -21,3 +21,4 @@ showPointCloud(pc2);
 %meanB=nanmean(pc2.Location);
 H=pcregrigid(pc2,pc1);
 H_matrix=H.T';
+
