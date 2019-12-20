@@ -72,6 +72,8 @@ for i=2:n
         transforms{i}=H{j}*transforms{i};
     end
 end
+
+%transforms=H;
 objects=[];
 end
 
