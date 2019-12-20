@@ -3,9 +3,6 @@ load calib_asus.mat
 I1= imread('rgb_0000.jpg');
 I2= imread('rgb_0001.jpg');
 
-%H_12=estimate_homografy(single(rgb2gray(I1)),single(rgb2gray(I2)));
-%print_Homografy(H_12,single(rgb2gray(I1)),single(rgb2gray(I2)));
-
 %% feature detection
 %Feature 1 ID
 [f1,d1] = vl_sift(single(rgb2gray(I1))) ;
@@ -30,8 +27,9 @@ xyz_I2= position3(Depth_cam.K,RGB_cam.K,R_d_to_rgb,T_d_to_rgb,depth_array,floor(
 %returns indexes of the inliers in the vector matches (which indexes all the features)  
 inliers=ransac_3dtransformation(xyz_I1,xyz_I2);
 
-
-
+%update points to calculate the transformation
+xyz_I1=xyz_I1(:,inliers) ;
+xyz_I2=xyz_I2(:,inliers);
 %centroid calculations
 c_1=nanmean(xyz_I1,2);
 c_2=nanmean(xyz_I2,2);
@@ -57,7 +55,7 @@ depth_array(isnan(depth_array))=0;
  pc1=point_cloud(Depth_cam.K,RGB_cam.K,R_d_to_rgb,T_d_to_rgb,depth_array);
  pc1.Color=reshape(I1,[],3);
  %showPointCloud(pc1);
- %figure;
+ figure;
  load depth_0001.mat
  depth_array(isnan(depth_array))=0;
  pc2=point_cloud(Depth_cam.K,RGB_cam.K,R_d_to_rgb,T_d_to_rgb,depth_array);
@@ -66,6 +64,7 @@ depth_array(isnan(depth_array))=0;
  pc2=pctransform(pc2,Tform);
  pc=pcmerge(pc1,pc2,0.00000001);
  showPointCloud(pc);
+ view([0 0 -1]);
 % % 
 % % %estimate 3d transformation between Point Clouds
 % % 
